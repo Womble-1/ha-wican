@@ -1069,3 +1069,92 @@ async def test_changed_pid_config_persists_without_new_pid(
 
     entry = hass.config_entries.async_get_entry(mock_config_entry.entry_id)
     assert entry.data["config"]["coolant"]["unit"] == "°C"
+
+
+async def test_first_push_dynamic_pid_creation_sets_measurement(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test first-push dynamic PID creation sets state_class: measurement and normalizes string numbers without requiring a second push."""
+    mock_config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    webhook_data = {
+        "autopid_data": {
+            "DPF_SOOT_BANK1": "114",
+            "DPF_REGEN_ACTIVE": "0",
+            "CalcEngineLoad": 10.2,
+            "ControlModuleVolt": "13.61",
+        },
+        "config": {},
+    }
+
+    coordinator = mock_config_entry.runtime_data.coordinator
+    coordinator.handle_webhook_data(webhook_data)
+    async_dispatcher_send(hass, "wican", "test_webhook_id", webhook_data)
+    await hass.async_block_till_done()
+    # Note: do NOT call coordinator.async_request_refresh()!
+
+    dpf_soot_state = hass.states.get("sensor.wican_device_dpf_soot_bank1")
+    assert dpf_soot_state is not None
+    assert dpf_soot_state.state == "114"
+    assert dpf_soot_state.attributes["unit_of_measurement"] == "%"
+    assert dpf_soot_state.attributes["state_class"] == "measurement"
+    assert dpf_soot_state.attributes["icon"] == "mdi:filter"
+
+    dpf_regen_state = hass.states.get("sensor.wican_device_dpf_regen_active")
+    assert dpf_regen_state is not None
+    assert dpf_regen_state.state == "0"
+    assert dpf_regen_state.attributes["state_class"] == "measurement"
+    assert dpf_regen_state.attributes["icon"] == "mdi:fire"
+
+    ctrl_mod_state = hass.states.get("sensor.wican_device_controlmodulevolt")
+    assert ctrl_mod_state is not None
+    assert ctrl_mod_state.state == "13.61"
+    assert ctrl_mod_state.attributes["unit_of_measurement"] == "V"
+    assert ctrl_mod_state.attributes["device_class"] == "voltage"
+    assert ctrl_mod_state.attributes["state_class"] == "measurement"
+
+
+async def test_restored_pid_state_normalization_on_startup(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test restored PID state normalization on startup."""
+    from homeassistant.components.sensor import SensorExtraStoredData
+    from homeassistant.core import State
+    from pytest_homeassistant_custom_component.common import (
+        mock_restore_cache_with_extra_data,
+    )
+    from custom_components.wican.sensor import DYNAMIC_PID_SENSORS
+
+    mock_restore_cache_with_extra_data(
+        hass,
+        (
+            (
+                State("sensor.wican_device_dpf_soot_bank1", "114"),
+                SensorExtraStoredData("114", "%").as_dict(),
+            ),
+        ),
+    )
+
+    mock_config_entry.add_to_hass(hass)
+    hass.config_entries.async_update_entry(
+        mock_config_entry,
+        data={**mock_config_entry.data, "pid_keys": ["DPF_SOOT_BANK1"], "config": {}},
+    )
+
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    entity = DYNAMIC_PID_SENSORS[mock_config_entry.entry_id]["DPF_SOOT_BANK1"]
+    assert entity._attr_native_value == 114
+    assert isinstance(entity._attr_native_value, int)
+    assert not isinstance(entity._attr_native_value, str)
+
+    state = hass.states.get("sensor.wican_device_dpf_soot_bank1")
+    assert state is not None
+    assert state.state == "114"
+    assert state.attributes["state_class"] == "measurement"
+

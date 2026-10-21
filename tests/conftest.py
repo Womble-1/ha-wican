@@ -6,6 +6,53 @@ from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
+try:
+    import pycares
+
+    pycares.Channel()
+except Exception:
+    pass
+
+try:
+    import sys
+    import types
+    import homeassistant.components.zeroconf as _czc
+
+    if "homeassistant.helpers.service_info.zeroconf" not in sys.modules:
+        _mod = types.ModuleType("homeassistant.helpers.service_info.zeroconf")
+        _mod.ZeroconfServiceInfo = _czc.ZeroconfServiceInfo
+        sys.modules["homeassistant.helpers.service_info.zeroconf"] = _mod
+except Exception:
+    pass
+
+try:
+    from homeassistant.components.recorder.models import StatisticMeanType
+except ImportError:
+    from enum import StrEnum
+
+    class StatisticMeanType(StrEnum):
+        NONE = "none"
+        ARITHMETIC = "arithmetic"
+        CIRCULAR = "circular"
+
+    import homeassistant.components.recorder.models as _rec_models
+    _rec_models.StatisticMeanType = StatisticMeanType
+
+try:
+    from homeassistant.components.recorder.db_schema import StatisticsMeta
+    if not hasattr(StatisticsMeta, "unit_class"):
+        _orig_meta_init = StatisticsMeta.__init__
+
+        def _compat_meta_init(self, *args, **kwargs):
+            kwargs.pop("unit_class", None)
+            kwargs.pop("mean_type", None)
+            kwargs["has_mean"] = True
+            _orig_meta_init(self, *args, **kwargs)
+
+        StatisticsMeta.__init__ = _compat_meta_init
+except Exception:
+    pass
+
 from homeassistant.const import CONF_WEBHOOK_ID
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component

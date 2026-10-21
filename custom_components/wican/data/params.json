@@ -2881,5 +2881,159 @@
       "unit": "%",
       "class": "none"
     }
+  },
+  "ENGINE_LOAD": {
+    "description": "Calculated Engine Load",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "BARO_PRES": {
+    "description": "Absolute Barometric Pressure",
+    "settings": {
+      "unit": "kPa",
+      "class": "atmospheric_pressure"
+    }
+  },
+  "INTAKE_MANI_PRESS": {
+    "description": "Intake Manifold Absolute Pressure",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "MAX_INT_MANI_PRESS": {
+    "description": "Maximum Intake Manifold Absolute Pressure",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "CTRL_MOD_V": {
+    "description": "Control Module Voltage",
+    "settings": {
+      "unit": "V",
+      "class": "voltage"
+    }
+  },
+  "TIMING_ADV": {
+    "description": "Timing Advance",
+    "settings": {
+      "unit": "°",
+      "class": "none"
+    }
+  },
+  "FUEL_INJ_TIMING": {
+    "description": "Fuel Injection Timing",
+    "settings": {
+      "unit": "°",
+      "class": "none"
+    }
+  },
+  "AMBIENT_TMP": {
+    "description": "Ambient Air Temperature",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "DIST_MIL": {
+    "description": "Distance Traveled with MIL On",
+    "settings": {
+      "unit": "km",
+      "class": "distance"
+    }
+  },
+  "DIST_SINCE_CLEAR": {
+    "description": "Distance Traveled Since Codes Cleared",
+    "settings": {
+      "unit": "km",
+      "class": "distance"
+    }
+  },
+  "TIME_SINCE_START": {
+    "description": "Run Time Since Engine Start",
+    "settings": {
+      "unit": "s",
+      "class": "duration"
+    }
+  },
+  "TIME_MIL_ON": {
+    "description": "Time Run with MIL On",
+    "settings": {
+      "unit": "min",
+      "class": "duration"
+    }
+  },
+  "TIME_SINCE_CLEAR": {
+    "description": "Time Since Trouble Codes Cleared",
+    "settings": {
+      "unit": "min",
+      "class": "duration"
+    }
+  },
+  "ABS_THROTTLE_B": {
+    "description": "Absolute Throttle Position B",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "ABS_THROTTLE_D": {
+    "description": "Accelerator Pedal Position D",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "ABS_THROTTLE_E": {
+    "description": "Accelerator Pedal Position E",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "EGR_ERROR": {
+    "description": "EGR Error",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "OXY_WR_VOLT": {
+    "description": "Oxygen Sensor Wide-Range Voltage",
+    "settings": {
+      "unit": "V",
+      "class": "voltage"
+    }
+  },
+  "OXY_CRNT": {
+    "description": "Oxygen Sensor Wide-Range Current",
+    "settings": {
+      "unit": "mA",
+      "class": "current"
+    }
+  },
+  "OXY_FAER": {
+    "description": "Fuel-Air Equivalence Ratio",
+    "settings": {
+      "unit": "λ",
+      "class": "none"
+    }
+  },
+  "DPF_SOOT": {
+    "description": "DPF Soot Accumulation",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "DPF_REGEN_ACTIVE": {
+    "description": "DPF Regeneration Active",
+    "settings": {
+      "unit": "",
+      "class": "none"
+    }
   }
 }

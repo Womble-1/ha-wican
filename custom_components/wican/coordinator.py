@@ -289,29 +289,30 @@ class MeatPiDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     def _normalize_string_value(self, key: str, raw_value: str) -> Any:
         """Normalize a string sensor value (unit suffixes, numerics, length)."""
-        # Battery voltage: strip "V" / " V" suffix (any case) and convert to float
-        # Handles firmware variants: "12.5V", "12.5 V", "12.5v", " 12.5 V "
-        if key == "batt_voltage":
-            _LOGGER.debug("Raw batt_voltage from device: %r", raw_value)
-            stripped = raw_value.strip()
-            if stripped.upper().endswith("V"):
-                numeric_part = stripped[:-1].strip()
-                try:
-                    return float(numeric_part)
-                except ValueError:
-                    _LOGGER.warning(
-                        "Failed to parse battery voltage: %r (numeric part: %r)",
-                        raw_value, numeric_part,
-                    )
-                    return raw_value
+        stripped = raw_value.strip()
+        if stripped:
+            # Battery voltage: strip "V" / " V" suffix (any case) and convert to float
+            # Handles firmware variants: "12.5V", "12.5 V", "12.5v", " 12.5 V "
+            if key == "batt_voltage":
+                _LOGGER.debug("Raw batt_voltage from device: %r", raw_value)
+                if stripped.upper().endswith("V"):
+                    numeric_part = stripped[:-1].strip()
+                    try:
+                        return float(numeric_part)
+                    except ValueError:
+                        _LOGGER.warning(
+                            "Failed to parse battery voltage: %r (numeric part: %r)",
+                            raw_value, numeric_part,
+                        )
+                        return raw_value
 
-        # Generic numeric string conversion
-        cleaned = raw_value.replace(".", "", 1).replace("-", "", 1)
-        if cleaned.isdigit():
-            try:
-                return float(raw_value) if "." in raw_value else int(raw_value)
-            except ValueError:
-                pass
+            # Generic numeric string conversion: prefer int when exact integer, else float
+            cleaned = stripped.replace(".", "", 1).replace("-", "", 1).replace("+", "", 1)
+            if cleaned.isdigit():
+                try:
+                    return float(stripped) if "." in stripped else int(stripped)
+                except ValueError:
+                    pass
 
         # The state machine rejects states longer than 255 characters.
         # Truncate instead of letting the write blow up.

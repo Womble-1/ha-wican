@@ -344,6 +344,22 @@ async def test_coordinator_normalize_numeric_strings(
     assert coordinator.normalize_sensor_value("test", "12.34.56") == "12.34.56"
 
 
+async def test_coordinator_whitespace_and_signed_string_normalization(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test coordinator normalizes whitespace-padded and signed numeric strings."""
+    mock_config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    coordinator = mock_config_entry.runtime_data.coordinator
+    assert coordinator.normalize_sensor_value("test", " 114 ") == 114
+    assert coordinator.normalize_sensor_value("test", " 13.61 ") == 13.61
+    assert coordinator.normalize_sensor_value("test", "+10") == 10
+    assert coordinator.normalize_sensor_value("test", " -89 ") == -89
+
+
 async def test_coordinator_get_sensor_value(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,

@@ -382,6 +382,23 @@ class TestPidAliasNormalization:
         assert _normalize_param_name("zz-unknown") == "ZZ-UNKNOWN"
 
 
+    def test_alias_and_fallback_metadata_resolution(self) -> None:
+        """Test resolution of standard OBD-II and DPF PID metadata."""
+        assert get_param_unit("DPF_SOOT_BANK1") == "%"
+        assert get_param_icon("DPF_SOOT_BANK1") == "mdi:filter"
+        assert get_param_unit("CalcEngineLoad") == "%"
+        assert get_param_unit("IntakeManiAbsPress") == "kPa"
+        assert get_param_device_class("IntakeManiAbsPress") == "pressure"
+        assert get_param_unit("AbsBaroPres") == "kPa"
+        assert get_param_device_class("AbsBaroPres") == "atmospheric_pressure"
+        assert get_param_unit("ControlModuleVolt") == "V"
+        assert get_param_device_class("ControlModuleVolt") == "voltage"
+        assert get_param_unit("TimeSinceEngStart") == "s"
+        assert get_param_device_class("TimeSinceEngStart") == "duration"
+        assert get_param_unit("DistanceSinceCodeClear") == "km"
+        assert get_param_device_class("DistanceSinceCodeClear") == "distance"
+
+
 class TestParamFileLoading:
     """Tests for params.json loading and hashing error paths."""
 
@@ -612,7 +629,11 @@ class TestParamsManagerSync:
         ):
             assert await pl.async_update_params_from_github(hass) is True
 
-        assert pl._PARAMS == new_params
+        assert "NEWP" in pl._PARAMS
+        assert pl._PARAMS["NEWP"] == new_params["NEWP"]
+        assert "DPF_SOOT" in pl._PARAMS
+        assert "ENGINE_LOAD" in pl._PARAMS
+        assert "CTRL_MOD_V" in pl._PARAMS
         stored = await pl._get_manager(hass)._store.async_load()
         assert stored["params"] == new_params
         assert stored["etag"] == "e1"
@@ -664,7 +685,32 @@ class TestParamsManagerSync:
         ):
             assert await pl.async_update_params_from_github(hass) is False
 
-        assert pl._PARAMS == stored_params
+        assert "STOREDP" in pl._PARAMS
+        assert pl._PARAMS["STOREDP"] == stored_params["STOREDP"]
+        assert "DPF_SOOT" in pl._PARAMS
+        assert "ENGINE_LOAD" in pl._PARAMS
+        assert "CTRL_MOD_V" in pl._PARAMS
+
+    @pytest.mark.asyncio
+    async def test_github_merge_preserves_bundled_params(self, hass) -> None:
+        """Remote parameters are merged without deleting bundled parameters."""
+        from unittest.mock import AsyncMock, patch
+
+        from custom_components.wican import param_loader as pl
+
+        remote_params = {
+            "REMOTE_ONLY": {"description": "Remote", "settings": {"unit": "V"}},
+        }
+        with patch.object(
+            pl, "async_fetch_params_from_github",
+            AsyncMock(return_value=self._fetch_result(ok=True, data=remote_params, etag="e2")),
+        ):
+            assert await pl.async_update_params_from_github(hass) is True
+
+        assert "REMOTE_ONLY" in pl._PARAMS
+        assert "DPF_SOOT" in pl._PARAMS
+        assert "ENGINE_LOAD" in pl._PARAMS
+        assert "CTRL_MOD_V" in pl._PARAMS
 
     @pytest.mark.asyncio
     async def test_force_refresh_reports_failure(self, hass) -> None:

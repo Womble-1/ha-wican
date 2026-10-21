@@ -84,6 +84,7 @@ DEVICE_CLASS_ICONS: Final[dict[str, str]] = {
     "current": "mdi:current-ac",
     "power": "mdi:flash",
     "pressure": "mdi:gauge",
+    "atmospheric_pressure": "mdi:gauge",
     "distance": "mdi:ruler",
     "duration": "mdi:timer",
     "frequency": "mdi:sine-wave",
@@ -101,14 +102,23 @@ DEVICE_CLASS_ICONS: Final[dict[str, str]] = {
 PARAM_NAME_ICONS: Final[dict[str, str]] = {
     # Engine
     "engine_rpm": "mdi:engine",
+    "engine_load": "mdi:engine",
     # Fuel
     "fuel": "mdi:fuel",
+    "fuel_l": "mdi:fuel",
     "fuel_rate": "mdi:gas-station",
     "fuel_pump_duty": "mdi:fuel",
     "fuel_sys_stat": "mdi:fuel",
     "pcm_fuel_rate": "mdi:gas-station",
     # Throttle
     "throttle": "mdi:car-cruise-control",
+    "abs_throttle_b": "mdi:car-cruise-control",
+    "abs_throttle_d": "mdi:car-cruise-control",
+    "abs_throttle_e": "mdi:car-cruise-control",
+    # DPF
+    "dpf_soot": "mdi:filter",
+    "dpf_soot_bank1": "mdi:filter",
+    "dpf_regen_active": "mdi:fire",
     # Air
     "maf": "mdi:weather-windy",
     "intake_air_tmp": "mdi:thermometer",
@@ -386,8 +396,9 @@ class _ParamsManager:
         raw_etag = stored.get("etag")
         if isinstance(raw_etag, str):
             self._etag = raw_etag
+        merged = {**_load_params(), **_PARAMS, **validated}
         _PARAMS.clear()
-        _PARAMS.update(validated)
+        _PARAMS.update(merged)
         _LOGGER.debug(
             "Applied %d stored parameter definitions", len(validated),
         )
@@ -421,8 +432,9 @@ class _ParamsManager:
             if result.unchanged or result.data is None:
                 return False
 
+            merged = {**_load_params(), **_PARAMS, **result.data}
             _PARAMS.clear()
-            _PARAMS.update(result.data)
+            _PARAMS.update(merged)
             self._etag = result.etag
             try:
                 await self._store.async_save(
@@ -583,6 +595,76 @@ _PID_ALIASES: Final[dict[str, str]] = {
     "odometer": "ODOMETER",
     "a6-odometer": "ODOMETER",
     "a6_odometer": "ODOMETER",
+    # Intake Manifold Absolute Pressure (PID 0x0B / 0x50)
+    "intakemaniabspress": "INTAKE_MANI_PRESS",
+    "intake_mani_abs_press": "INTAKE_MANI_PRESS",
+    "0b-intakemaniabspress": "INTAKE_MANI_PRESS",
+    "0b_intakemaniabspress": "INTAKE_MANI_PRESS",
+    "max_intmaniabspres": "MAX_INT_MANI_PRESS",
+    "maxintmaniabspres": "MAX_INT_MANI_PRESS",
+    "50-max_intmaniabspres": "MAX_INT_MANI_PRESS",
+    # Additional Throttle / Pedal Positions (PIDs 0x47, 0x49, 0x4A)
+    "absthrottleposb": "ABS_THROTTLE_B",
+    "abs_throttle_pos_b": "ABS_THROTTLE_B",
+    "47-absthrottleposb": "ABS_THROTTLE_B",
+    "47_absthrottleposb": "ABS_THROTTLE_B",
+    "absthrottleposd": "ABS_THROTTLE_D",
+    "abs_throttle_pos_d": "ABS_THROTTLE_D",
+    "49-absthrottleposd": "ABS_THROTTLE_D",
+    "49_absthrottleposd": "ABS_THROTTLE_D",
+    "absthrottlepose": "ABS_THROTTLE_E",
+    "abs_throttle_pos_e": "ABS_THROTTLE_E",
+    "4a-absthrottlepose": "ABS_THROTTLE_E",
+    "4a_absthrottlepose": "ABS_THROTTLE_E",
+    # EGR Error (PID 0x2D)
+    "egrerror": "EGR_ERROR",
+    "egr_error": "EGR_ERROR",
+    "2d-egrerror": "EGR_ERROR",
+    "2d_egrerror": "EGR_ERROR",
+    # Fuel Injection Timing (PID 0x5D)
+    "fuelinjectiontiming": "FUEL_INJ_TIMING",
+    "fuel_injection_timing": "FUEL_INJ_TIMING",
+    "5d-fuelinjectiontiming": "FUEL_INJ_TIMING",
+    "5d_fuelinjectiontiming": "FUEL_INJ_TIMING",
+    # Run Time / MIL / Clear Durations (PIDs 0x1F, 0x4D, 0x4E)
+    "timesinceengstart": "TIME_SINCE_START",
+    "time_since_eng_start": "TIME_SINCE_START",
+    "1f-timesinceengstart": "TIME_SINCE_START",
+    "1f_timesinceengstart": "TIME_SINCE_START",
+    "timerunmilon": "TIME_MIL_ON",
+    "time_run_mil_on": "TIME_MIL_ON",
+    "4d-timerunmilon": "TIME_MIL_ON",
+    "4d_timerunmilon": "TIME_MIL_ON",
+    "timesincecodeclear": "TIME_SINCE_CLEAR",
+    "time_since_code_clear": "TIME_SINCE_CLEAR",
+    "4e-timesincecodeclear": "TIME_SINCE_CLEAR",
+    "4e_timesincecodeclear": "TIME_SINCE_CLEAR",
+    # Distance Since Codes Cleared (PID 0x31)
+    "distancesincecodeclear": "DIST_SINCE_CLEAR",
+    "distance_since_code_clear": "DIST_SINCE_CLEAR",
+    "31-distancesincecodeclear": "DIST_SINCE_CLEAR",
+    "31_distancesincecodeclear": "DIST_SINCE_CLEAR",
+    # Wide-Range O2 Sensor Voltages, Currents & Equivalence Ratios
+    "oxysensor1_wr_volt": "OXY_WR_VOLT",
+    "oxysensor2_wr_volt": "OXY_WR_VOLT",
+    "oxysensor5_wr_volt": "OXY_WR_VOLT",
+    "max_oxysensvol": "OXY_WR_VOLT",
+    "oxysensor1_crnt": "OXY_CRNT",
+    "oxysensor2_crnt": "OXY_CRNT",
+    "oxysensor5_crnt": "OXY_CRNT",
+    "max_oxysenscrnt": "OXY_CRNT",
+    "oxysensor1_wr_faer": "OXY_FAER",
+    "oxysensor2_wr_faer": "OXY_FAER",
+    "oxysensor5_wr_faer": "OXY_FAER",
+    "oxysensor1_wrc_faer": "OXY_FAER",
+    "oxysensor2_wrc_faer": "OXY_FAER",
+    "oxysensor5_wrc_faer": "OXY_FAER",
+    "max_faer": "OXY_FAER",
+    # DPF Soot & Regeneration
+    "dpf_soot_bank1": "DPF_SOOT",
+    "dpf_soot_bank2": "DPF_SOOT",
+    "dpf_soot": "DPF_SOOT",
+    "dpf_regen_active": "DPF_REGEN_ACTIVE",
 }
 
 
@@ -649,6 +731,7 @@ _DEVICE_CLASS_VALID_UNITS: Final[dict[str, set[str]]] = {
     "speed": {"km/h", "m/s", "mph", "kn", "ft/s"},
     "temperature": {"°c", "°f", "k", "degc", "degf"},
     "pressure": {"pa", "hpa", "kpa", "bar", "mbar", "psi", "inhg", "mmhg"},
+    "atmospheric_pressure": {"pa", "hpa", "kpa", "bar", "mbar", "psi", "inhg", "mmhg"},
     "voltage": {"v", "mv", "volts"},
     "current": {"a", "ma", "amps"},
     "power": {"w", "kw", "mw", "watts"},

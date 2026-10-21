@@ -679,8 +679,14 @@ class MeatPiPidSensorEntity(MeatPiEntity, RestoreSensor):
         """
 
     async def async_added_to_hass(self) -> None:
-        """Restore the last known value."""
+        """Restore the last known value or seed from current coordinator data."""
         state = await self.async_get_last_sensor_data()
-        if state:
+        if state and state.native_value is not None:
             self._attr_native_value = self._usable_value(state.native_value)
+
+        data = self.coordinator.data or {}
+        pid_data = data.get("autopid_data", {})
+        if isinstance(pid_data, dict) and self._pid_key in pid_data:
+            self._attr_native_value = self._usable_value(pid_data[self._pid_key])
+
         await super().async_added_to_hass()

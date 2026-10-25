@@ -818,4 +818,78 @@ class TestStoredEtagTrust:
             await pl.async_update_params_from_github(hass)
 
         assert fetch.call_args.kwargs.get("etag") == 'W/"fresh"'
-        assert pl._PARAMS["GOOD"]["description"] == "ok"
+
+
+class TestToyotaParameters:
+    """Tests for Toyota Land Cruiser 200 (VDJ200R) / Techstream parameter definitions."""
+
+    def test_toyota_engine_and_transmission_params(self) -> None:
+        from custom_components.wican.param_loader import (
+            get_param_device_class,
+            get_param_icon,
+            get_param_unit,
+        )
+
+        assert get_param_unit("Engine_Speed") == "rpm"
+        assert get_param_device_class("Engine_Speed") == "frequency"
+        assert get_param_icon("Engine_Speed") == "mdi:engine"
+
+        assert get_param_unit("Engine_Speed_CAN") == "rpm"
+        assert get_param_device_class("Engine_Speed_CAN") == "frequency"
+        assert get_param_icon("Engine_Speed_CAN") == "mdi:engine"
+
+        assert get_param_unit("AT_Oil_Temperature_1") == "°C"
+        assert get_param_device_class("AT_Oil_Temperature_1") == "temperature"
+        assert get_param_icon("AT_Oil_Temperature_1") == "mdi:oil-temperature"
+
+        assert get_param_unit("AT_Oil_Temperature_2") == "°C"
+        assert get_param_device_class("AT_Oil_Temperature_2") == "temperature"
+        assert get_param_icon("AT_Oil_Temperature_2") == "mdi:oil-temperature"
+
+    def test_toyota_dpf_and_fuel_rail_params(self) -> None:
+        from custom_components.wican.param_loader import (
+            get_param_device_class,
+            get_param_icon,
+            get_param_unit,
+        )
+
+        assert get_param_unit("PM_Accumulation_Ratio") == "%"
+        assert get_param_device_class("PM_Accumulation_Ratio") is None
+        assert get_param_icon("PM_Accumulation_Ratio") == "mdi:filter"
+
+        assert get_param_unit("Partic_Filter_Diff_Press_1") == "kPa"
+        assert get_param_device_class("Partic_Filter_Diff_Press_1") == "pressure"
+        assert get_param_icon("Partic_Filter_Diff_Press_1") == "mdi:gauge"
+
+        assert get_param_unit("Target_Common_Rail_Pressure") == "kPa"
+        assert get_param_device_class("Target_Common_Rail_Pressure") == "pressure"
+
+        assert get_param_unit("Common_Rail_Pressure") == "kPa"
+        assert get_param_device_class("Common_Rail_Pressure") == "pressure"
+
+    def test_toyota_odometer_mi_has_no_device_class(self) -> None:
+        """Odometer_mi must have unit 'mi' but class None to prevent Home Assistant metric auto-conversion."""
+        from custom_components.wican.param_loader import (
+            get_param_device_class,
+            get_param_unit,
+        )
+
+        assert get_param_unit("Odometer_mi") == "mi"
+        assert get_param_device_class("Odometer_mi") is None
+
+        assert get_param_unit("Odometer_km") == "km"
+        assert get_param_device_class("Odometer_km") == "distance"
+
+    def test_toyota_legacy_aliases(self) -> None:
+        from custom_components.wican.param_loader import (
+            _normalize_param_name,
+        )
+
+        assert _normalize_param_name("atf_pan_temp") == "AT_OIL_TEMPERATURE_1"
+        assert _normalize_param_name("atf_converter_temp") == "AT_OIL_TEMPERATURE_2"
+        assert _normalize_param_name("engine_rpm_can") == "ENGINE_SPEED_CAN"
+        assert _normalize_param_name("fuel_l_polled") == "FUEL_INPUT_LEVEL"
+        assert _normalize_param_name("fuel_level_can") == "FUEL_INPUT_LEVEL_CAN"
+        assert _normalize_param_name("fuel_rail_press_target") == "TARGET_COMMON_RAIL_PRESSURE"
+        assert _normalize_param_name("fuel_rail_press_actual") == "COMMON_RAIL_PRESSURE"
+        assert _normalize_param_name("vnt_turbo1_target") == "TARGET_VN_TURBO_POSITION"

@@ -2,8 +2,12 @@
 
 ## Status
 - All changes from the patch specification implemented.
-- All unit tests added and passing.
-- Full test suite passing (729 passed).
+- Added Toyota Land Cruiser 200 (VDJ200R) canonical parameters (397 total in `params.json`).
+- Fixed `Odometer_mi` metric auto-conversion in Home Assistant (`class: "none"`).
+- Added `ODOMETER_KM` (`unit: "km"`, `class: "distance"`).
+- Fixed merge order in `param_loader.py` so bundled `params.json` overrides take precedence over GitHub fetches.
+- Fixed `api.py` `async_export_log_rows()` to handle `HTTP 400` gracefully.
+- All unit tests added and passing (76 in `test_param_loader.py`).
 
 ## Completed
 - [x] Check / finish dependency installation.

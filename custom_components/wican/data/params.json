@@ -2571,7 +2571,7 @@
   "ODOMETER_MI": {
     "description": "Vehicle odometer in miles",
     "settings": {
-      "class": "distance",
+      "class": "none",
       "unit": "mi",
       "min": "0"
     }
@@ -3033,6 +3033,274 @@
     "description": "DPF Regeneration Active",
     "settings": {
       "unit": "",
+      "class": "none"
+    }
+  },
+  "ODOMETER_KM": {
+    "description": "Vehicle odometer in kilometers",
+    "settings": {
+      "unit": "km",
+      "class": "distance",
+      "min": "0"
+    }
+  },
+  "ENGINE_SPEED": {
+    "description": "Engine Speed",
+    "settings": {
+      "unit": "rpm",
+      "class": "frequency"
+    }
+  },
+  "ENGINE_SPEED_CAN": {
+    "description": "Engine Speed (CAN Broadcast)",
+    "settings": {
+      "unit": "rpm",
+      "class": "frequency"
+    }
+  },
+  "BATTERY_VOLTAGE": {
+    "description": "Battery Voltage",
+    "settings": {
+      "unit": "V",
+      "class": "voltage"
+    }
+  },
+  "MAP": {
+    "description": "Manifold Absolute Pressure",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "FUEL_INPUT_LEVEL": {
+    "description": "Fuel Input Level",
+    "settings": {
+      "unit": "L",
+      "class": "volume"
+    }
+  },
+  "FUEL_INPUT_LEVEL_CAN": {
+    "description": "Fuel Input Level (CAN Broadcast)",
+    "settings": {
+      "unit": "L",
+      "class": "volume"
+    }
+  },
+  "AT_OIL_TEMPERATURE_1": {
+    "description": "Automatic Transmission Oil Temperature 1 (Pan)",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "AT_OIL_TEMPERATURE_2": {
+    "description": "Automatic Transmission Oil Temperature 2 (Torque Converter)",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "PARTIC_FILTER_DIFF_PRESS_1": {
+    "description": "Particulate Filter Differential Pressure Bank 1",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "PARTIC_FILTER_DIFF_PRESS_2": {
+    "description": "Particulate Filter Differential Pressure Bank 2",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "DIFF_PRESS_SENSOR_CORR": {
+    "description": "Differential Pressure Sensor Correction Bank 1",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "DIFF_PRESS_SENSOR_CORR_2": {
+    "description": "Differential Pressure Sensor Correction Bank 2",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "PM_ACCUMULATION_RATIO": {
+    "description": "Particulate Matter Accumulation Ratio Bank 1",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "PM_ACCUMULATION_RATIO_2": {
+    "description": "Particulate Matter Accumulation Ratio Bank 2",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "EXHAUST_FUEL_ADDITION_FB": {
+    "description": "Exhaust Fuel Addition Feedback Bank 1",
+    "settings": {
+      "unit": "",
+      "class": "none"
+    }
+  },
+  "EXHAUST_FUEL_ADDITION_FB_2": {
+    "description": "Exhaust Fuel Addition Feedback Bank 2",
+    "settings": {
+      "unit": "",
+      "class": "none"
+    }
+  },
+  "DPNR_DPF_STATUS_REJU_PM": {
+    "description": "DPNR / DPF Status Rejuvenation PM Active",
+    "settings": {
+      "unit": "",
+      "class": "none",
+      "type": "binary_sensor"
+    }
+  },
+  "TARGET_COMMON_RAIL_PRESSURE": {
+    "description": "Target Common Rail Fuel Pressure",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "COMMON_RAIL_PRESSURE": {
+    "description": "Common Rail Fuel Pressure",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "FUEL_TEMPERATURE": {
+    "description": "Fuel Temperature",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "EXHAUST_TEMPERATURE_B1S1": {
+    "description": "Exhaust Temperature Bank 1 Sensor 1 (Turbo Out)",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "EXHAUST_TEMPERATURE_B1S2": {
+    "description": "Exhaust Temperature Bank 1 Sensor 2 (DPF In)",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "EXHAUST_TEMPERATURE_B1S3": {
+    "description": "Exhaust Temperature Bank 1 Sensor 3 (DPF Out)",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "EXHAUST_TEMPERATURE_B2S1": {
+    "description": "Exhaust Temperature Bank 2 Sensor 1 (Turbo Out)",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "EXHAUST_TEMPERATURE_B2S2": {
+    "description": "Exhaust Temperature Bank 2 Sensor 2 (DPF In)",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "EXHAUST_TEMPERATURE_B2S3": {
+    "description": "Exhaust Temperature Bank 2 Sensor 3 (DPF Out)",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "TARGET_BOOSTER_PRESSURE": {
+    "description": "Target Booster Pressure",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "TARGET_VN_TURBO_POSITION": {
+    "description": "Target Variable Nozzle Turbo Position Bank 1",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "TARGET_VN_TURBO_POSITION_2": {
+    "description": "Target Variable Nozzle Turbo Position Bank 2",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "ACTUAL_VN_TURBO_POSITION": {
+    "description": "Actual Variable Nozzle Turbo Position Bank 1",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "ACTUAL_VN_TURBO_POSITION_2": {
+    "description": "Actual Variable Nozzle Turbo Position Bank 2",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "TARGET_EGR_VALVE_POS": {
+    "description": "Target EGR Valve Position Bank 1",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "ACTUAL_EGR_VALVE_POS": {
+    "description": "Actual EGR Valve Position Bank 1",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "TARGET_EGR_VALVE_POS_2": {
+    "description": "Target EGR Valve Position Bank 2",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "ACTUAL_EGR_VALVE_POS_2": {
+    "description": "Actual EGR Valve Position Bank 2",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "ACTUAL_THROTTLE_POSITION": {
+    "description": "Actual Throttle Position Bank 1",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "ACTUAL_THROTTLE_POSITION_2": {
+    "description": "Actual Throttle Position Bank 2",
+    "settings": {
+      "unit": "%",
       "class": "none"
     }
   }

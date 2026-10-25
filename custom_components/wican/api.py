@@ -299,7 +299,7 @@ class MeatPiApiClient:
                 max_bytes=HISTORY_EXPORT_PAGE_BYTES,
             )
         except MeatPiApiError as err:
-            if err.status == HTTPStatus.NOT_FOUND:
+            if err.status in (HTTPStatus.NOT_FOUND, HTTPStatus.BAD_REQUEST):
                 return None
             raise
 

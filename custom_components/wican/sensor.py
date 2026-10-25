@@ -118,9 +118,9 @@ def _normalize_device_class(
     Returns:
         Valid SensorDeviceClass enum or None.
     """
-    # Handle "none" string as None
+    # Handle explicit "none" string from config as None without falling back
     if isinstance(device_class, str) and device_class.lower() == "none":
-        device_class = None
+        return None
 
     # Anything other than a string/enum class is device garbage.
     if device_class is not None and not isinstance(device_class, (str, SensorDeviceClass)):

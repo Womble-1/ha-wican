@@ -197,6 +197,35 @@ PARAM_NAME_ICONS: Final[dict[str, str]] = {
     # Octane
     "octane_ratio_l": "mdi:fuel",
     "pcm_learned_octane_ratio": "mdi:fuel",
+    # Toyota Land Cruiser / Techstream
+    "engine_speed": "mdi:engine",
+    "engine_speed_can": "mdi:engine",
+    "at_oil_temperature_1": "mdi:oil-temperature",
+    "at_oil_temperature_2": "mdi:oil-temperature",
+    "pm_accumulation_ratio": "mdi:filter",
+    "pm_accumulation_ratio_2": "mdi:filter",
+    "partic_filter_diff_press_1": "mdi:gauge",
+    "partic_filter_diff_press_2": "mdi:gauge",
+    "diff_press_sensor_corr": "mdi:gauge",
+    "diff_press_sensor_corr_2": "mdi:gauge",
+    "target_common_rail_pressure": "mdi:gauge",
+    "common_rail_pressure": "mdi:gauge",
+    "target_booster_pressure": "mdi:gauge",
+    "target_vn_turbo_position": "mdi:car-turbocharger",
+    "target_vn_turbo_position_2": "mdi:car-turbocharger",
+    "actual_vn_turbo_position": "mdi:car-turbocharger",
+    "actual_vn_turbo_position_2": "mdi:car-turbocharger",
+    "target_egr_valve_pos": "mdi:car-cruise-control",
+    "actual_egr_valve_pos": "mdi:car-cruise-control",
+    "target_egr_valve_pos_2": "mdi:car-cruise-control",
+    "actual_egr_valve_pos_2": "mdi:car-cruise-control",
+    "actual_throttle_position": "mdi:car-cruise-control",
+    "actual_throttle_position_2": "mdi:car-cruise-control",
+    "dpnr_dpf_status_reju_pm": "mdi:fire",
+    "exhaust_fuel_addition_fb": "mdi:tune-vertical",
+    "exhaust_fuel_addition_fb_2": "mdi:tune-vertical",
+    "odometer_km": "mdi:counter",
+    "odometer_mi": "mdi:counter",
 }
 
 # Default icon for unknown parameters
@@ -396,7 +425,7 @@ class _ParamsManager:
         raw_etag = stored.get("etag")
         if isinstance(raw_etag, str):
             self._etag = raw_etag
-        merged = {**_load_params(), **_PARAMS, **validated}
+        merged = {**validated, **_PARAMS, **_load_params()}
         _PARAMS.clear()
         _PARAMS.update(merged)
         _LOGGER.debug(
@@ -432,7 +461,7 @@ class _ParamsManager:
             if result.unchanged or result.data is None:
                 return False
 
-            merged = {**_load_params(), **_PARAMS, **result.data}
+            merged = {**result.data, **_PARAMS, **_load_params()}
             _PARAMS.clear()
             _PARAMS.update(merged)
             self._etag = result.etag
@@ -665,6 +694,82 @@ _PID_ALIASES: Final[dict[str, str]] = {
     "dpf_soot_bank2": "DPF_SOOT",
     "dpf_soot": "DPF_SOOT",
     "dpf_regen_active": "DPF_REGEN_ACTIVE",
+    # Toyota Land Cruiser (VDJ200R) / Techstream
+    "engine_speed": "ENGINE_SPEED",
+    "enginespeed": "ENGINE_SPEED",
+    "engine_speed_can": "ENGINE_SPEED_CAN",
+    "enginespeedcan": "ENGINE_SPEED_CAN",
+    "engine_rpm_can": "ENGINE_SPEED_CAN",
+    "enginerpmcan": "ENGINE_SPEED_CAN",
+    "battery_voltage": "BATTERY_VOLTAGE",
+    "batteryvoltage": "BATTERY_VOLTAGE",
+    "ecm_voltage": "BATTERY_VOLTAGE",
+    "map": "MAP",
+    "map_boost_actual": "MAP",
+    "fuel_input_level": "FUEL_INPUT_LEVEL",
+    "fuelinputlevel": "FUEL_INPUT_LEVEL",
+    "fuel_l_polled": "FUEL_INPUT_LEVEL",
+    "fuel_input_level_can": "FUEL_INPUT_LEVEL_CAN",
+    "fuelinputlevelcan": "FUEL_INPUT_LEVEL_CAN",
+    "fuel_level_can": "FUEL_INPUT_LEVEL_CAN",
+    "at_oil_temperature_1": "AT_OIL_TEMPERATURE_1",
+    "at_oil_temp_1": "AT_OIL_TEMPERATURE_1",
+    "atf_pan_temp": "AT_OIL_TEMPERATURE_1",
+    "at_oil_temperature_2": "AT_OIL_TEMPERATURE_2",
+    "at_oil_temp_2": "AT_OIL_TEMPERATURE_2",
+    "atf_converter_temp": "AT_OIL_TEMPERATURE_2",
+    "partic_filter_diff_press_1": "PARTIC_FILTER_DIFF_PRESS_1",
+    "dpf_diff_press_b1": "PARTIC_FILTER_DIFF_PRESS_1",
+    "partic_filter_diff_press_2": "PARTIC_FILTER_DIFF_PRESS_2",
+    "dpf_diff_press_b2": "PARTIC_FILTER_DIFF_PRESS_2",
+    "diff_press_sensor_corr": "DIFF_PRESS_SENSOR_CORR",
+    "diff_press_sensor_corr_2": "DIFF_PRESS_SENSOR_CORR_2",
+    "pm_accumulation_ratio": "PM_ACCUMULATION_RATIO",
+    "pm_accumulation_ratio_2": "PM_ACCUMULATION_RATIO_2",
+    "dpf_pm_load_b1": "PM_ACCUMULATION_RATIO",
+    "dpf_pm_load_b2": "PM_ACCUMULATION_RATIO_2",
+    "dpf_soot_alt_b1": "PM_ACCUMULATION_RATIO",
+    "dpf_soot_alt_b2": "PM_ACCUMULATION_RATIO_2",
+    "dpf_soot_ratio_b1": "PM_ACCUMULATION_RATIO",
+    "dpf_soot_ratio_b2": "PM_ACCUMULATION_RATIO_2",
+    "exhaust_fuel_addition_fb": "EXHAUST_FUEL_ADDITION_FB",
+    "exhaust_fuel_addition_fb_2": "EXHAUST_FUEL_ADDITION_FB_2",
+    "dpnr_dpf_status_reju_pm": "DPNR_DPF_STATUS_REJU_PM",
+    "target_common_rail_pressure": "TARGET_COMMON_RAIL_PRESSURE",
+    "fuel_rail_press_target": "TARGET_COMMON_RAIL_PRESSURE",
+    "common_rail_pressure": "COMMON_RAIL_PRESSURE",
+    "fuel_rail_press_actual": "COMMON_RAIL_PRESSURE",
+    "fuel_temperature": "FUEL_TEMPERATURE",
+    "fuel_temp": "FUEL_TEMPERATURE",
+    "exhaust_temperature_b1s1": "EXHAUST_TEMPERATURE_B1S1",
+    "egt1_turbo_out_b1": "EXHAUST_TEMPERATURE_B1S1",
+    "exhaust_temperature_b1s2": "EXHAUST_TEMPERATURE_B1S2",
+    "egt2_dpf_in_b1": "EXHAUST_TEMPERATURE_B1S2",
+    "exhaust_temperature_b1s3": "EXHAUST_TEMPERATURE_B1S3",
+    "egt3_dpf_out_b1": "EXHAUST_TEMPERATURE_B1S3",
+    "exhaust_temperature_b2s1": "EXHAUST_TEMPERATURE_B2S1",
+    "egt1_turbo_out_b2": "EXHAUST_TEMPERATURE_B2S1",
+    "exhaust_temperature_b2s2": "EXHAUST_TEMPERATURE_B2S2",
+    "egt2_dpf_in_b2": "EXHAUST_TEMPERATURE_B2S2",
+    "exhaust_temperature_b2s3": "EXHAUST_TEMPERATURE_B2S3",
+    "egt3_dpf_out_b2": "EXHAUST_TEMPERATURE_B2S3",
+    "dpf_cat_temp_b1": "EXHAUST_TEMPERATURE_B1S2",
+    "dpf_cat_temp_b2": "EXHAUST_TEMPERATURE_B2S2",
+    "target_booster_pressure": "TARGET_BOOSTER_PRESSURE",
+    "target_vn_turbo_position": "TARGET_VN_TURBO_POSITION",
+    "vnt_turbo1_target": "TARGET_VN_TURBO_POSITION",
+    "target_vn_turbo_position_2": "TARGET_VN_TURBO_POSITION_2",
+    "vnt_turbo2_target": "TARGET_VN_TURBO_POSITION_2",
+    "actual_vn_turbo_position": "ACTUAL_VN_TURBO_POSITION",
+    "actual_vn_turbo_position_2": "ACTUAL_VN_TURBO_POSITION_2",
+    "target_egr_valve_pos": "TARGET_EGR_VALVE_POS",
+    "actual_egr_valve_pos": "ACTUAL_EGR_VALVE_POS",
+    "target_egr_valve_pos_2": "TARGET_EGR_VALVE_POS_2",
+    "actual_egr_valve_pos_2": "ACTUAL_EGR_VALVE_POS_2",
+    "actual_throttle_position": "ACTUAL_THROTTLE_POSITION",
+    "actual_throttle_position_2": "ACTUAL_THROTTLE_POSITION_2",
+    "odometer_km": "ODOMETER_KM",
+    "odometer_mi": "ODOMETER_MI",
 }
 
 
